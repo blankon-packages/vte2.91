@@ -1,0 +1,29 @@
+From f178143feb5d14b55546fee4822fc2115a02be20 Mon Sep 17 00:00:00 2001
+From: Iain Lane <iain@orangesquash.org.uk>
+Date: Fri, 14 Nov 2014 16:02:47 +0000
+Subject: [PATCH] Add the style context provider with FALLBACK priority
+
+Adwaita doesn't set these properties any more, but other themes might
+want to. Set a lower priority than the theme.
+
+https://bugzilla.gnome.org/show_bug.cgi?id=740123
+---
+ src/vte.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/vte.c b/src/vte.c
+index 5b7c09a..7296a88 100644
+--- a/src/vte.c
++++ b/src/vte.c
+@@ -8057,7 +8057,7 @@ vte_terminal_init(VteTerminal *terminal)
+         context = gtk_widget_get_style_context (&terminal->widget);
+         gtk_style_context_add_provider (context,
+                                         VTE_TERMINAL_GET_CLASS (terminal)->priv->style_provider,
+-                                        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
++                                        GTK_STYLE_PROVIDER_PRIORITY_FALLBACK);
+ }
+ 
+ /* Tell GTK+ how much space we need. */
+-- 
+2.1.3
+

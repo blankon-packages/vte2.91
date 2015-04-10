@@ -1,0 +1,24 @@
+With the addition of 043_notebook_scroll.patch in gtk+3.0, it is 
+possible to switch tabs with Alt+mouse wheel from anywhere on the 
+notebook. This patch prevents vte from interecepting the signal.
+
+Corresponding GTK+ bug: GNOME #145244
+
+Index: vte-0.38.1/src/vte.c
+===================================================================
+--- vte-0.38.1.orig/src/vte.c	2014-10-14 20:30:19.341269893 +0200
++++ vte-0.38.1/src/vte.c	2014-10-14 20:30:19.337269836 +0200
+@@ -10401,6 +10401,13 @@
+ 
+ 	vte_terminal_read_modifiers (terminal, (GdkEvent*) event);
+ 
++#if GTK_CHECK_VERSION (2, 90, 8)
++	/* Do not intercept Alt+scroll, let the GtkNotebook handle it to switch tabs.
++	   Requires a fixed GTK+, see https://bugzilla.gnome.org/show_bug.cgi?id=145244 */
++	if (event->state & GDK_MOD1_MASK)
++		return FALSE;
++#endif
++
+ 	switch (event->direction) {
+ 	case GDK_SCROLL_UP:
+ 		terminal->pvt->mouse_smooth_scroll_delta -= 1.;
